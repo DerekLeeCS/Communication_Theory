@@ -1,4 +1,4 @@
-function estimatedSyms = LS( constellation, noisySyms )
+function estimatedSyms = LSNonDiff( constellation, noisySyms )
 
     % Calculate the distance from each point on the constellation
     % Need to use conj() to deal with transpose b/c transpose conjugates

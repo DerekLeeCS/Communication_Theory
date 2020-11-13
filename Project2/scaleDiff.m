@@ -17,20 +17,15 @@ function [ angle_noisefree, receivedDiff ] = scaleDiff( constellation, noisefree
     noise = 0.5*sqrt( N_o/2 ) * ( randn( 1, N ) + 1j*randn( 1, N ) ); %(n_o/2)/2 half noise power
     
     % Phase constellation
-    angle_constellation = atan2( imag(constellation_scaled), real(constellation_scaled) );
-    angle_constellation( angle_constellation < 0 ) = angle_constellation( angle_constellation < 0 ) + 2*pi;%min phase 0
-    angle_constellation = [angle_constellation-2*pi angle_constellation 2*pi];
+    angle_constellation = calcAngleConstellation( constellation_scaled );
     
     % Diff noisy and noisefree
     noisy = noisefree_scaled + noise;
-    angle_noisy = atan2( imag(noisy), real(noisy) ); 
-    angle_noisy = diff( angle_noisy );
-    
-    angle_noisefree = atan2( imag(noisefree_scaled), real(noisefree_scaled) );
-    angle_noisefree = diff( angle_noisefree );
+    angle_noisy = calcAngleSyms( noisy );
+    angle_noisefree = calcAngleSyms( noisefree_scaled );
 
-    % Array to store output
-    receivedDiff = LS( angle_constellation, angle_noisy );
+    % Calculate LS
+    receivedDiff = LSDiff( angle_constellation, angle_noisy );
     
 end
 

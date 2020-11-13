@@ -19,15 +19,7 @@ function [ noisefree_scaled, receivedVec ] = scaleNonDiff( constellation, noisef
     % Generate noisy signals
     noisy = noisefree_scaled + noise;
     
-%     figure();
-%     hold on;
-%     plotComplex( constellation_scaled, 'x' );
-%     plotComplex( noisy(1,:), 'o' );
-%     x = linspace( -desiredAvgEnergy, desiredAvgEnergy, 100 );
-%     plot( x, x ) 
-%     plot( x, -x )
-%     hold off;
-    
-    receivedVec = LS( constellation_scaled, noisy );
+    % Calculate LS
+    receivedVec = LSNonDiff( constellation_scaled, noisy );
     
 end

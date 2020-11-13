@@ -25,26 +25,13 @@ noise = sqrt(var) * ( randn( 1, length(symbols) ) + 1j*randn( 1, length(symbols)
 symbols_noisy = symbols + noise;
 
 disp( "Calculating Question #1" )
-estimates = LS( constellation, symbols_noisy );
+estimates = LSNonDiff( constellation, symbols_noisy );
 
 errNonDiff = calcError( symbols, estimates );
 disp( "Error for NonDiff: " + errNonDiff );
 
 disp( "Time required to computed Question 1" );
 toc
-
-% % Plot to visualize
-% figure();
-% hold on;
-% 
-% plotComplex( constellation, 'x' );
-% plotComplex( symbols_noisy, 'o' );
-% 
-% % Decision boundaries
-% range = linspace( -1, 1, 100 );
-% plot( range, range ) 
-% plot( range, -range )
-% hold off;
 
 
 %% Question 2
@@ -56,15 +43,11 @@ SNRBit = 20;
 
 disp( "Calculating Question #2 NonDiff" )
 [ noisefree_scaled, receivedVec ] = scaleNonDiff( constellation, symbols, N_o, SNRBit );
-
 errNonDiff = calcError( noisefree_scaled, receivedVec );
 disp( "Error for NonDiff: " + errNonDiff );
 
-% FIX INPUTS SO THEY ARE EXACTLY PART OF THE CONSTELLATION
 disp( "Calculating Question #2 Diff" )
 [ transmitted_D, received_D ] = scaleDiff( constellation, symbols, N_o, SNRBit );     
-
-% Change errorNonDiff() func to error()
 errDiff = calcError( transmitted_D, received_D );
 disp( "Error for Diff: " + errDiff );
 
