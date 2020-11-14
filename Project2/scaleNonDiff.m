@@ -2,7 +2,7 @@ function [ noisefree_scaled, receivedVec ] = scaleNonDiff( constellation, noisef
 
     % Calculate desired energy of symbols
     M = length( constellation );
-    desiredAvgEnergy = db2pow(SNRBit) * N_o/2 * log2(M);
+    desiredAvgEnergy = db2pow(SNRBit) * N_o * floor( log2(M) );
         
     % Calculate average energy of constellation
     avgEnergy = 1/M * sum( abs(constellation).^2 );
@@ -14,7 +14,8 @@ function [ noisefree_scaled, receivedVec ] = scaleNonDiff( constellation, noisef
     
     % Generate noise with desired average energy
     N = size( noisefree, 2 );
-    noise = 0.5*sqrt( N_o/2 ) * ( randn( 1, N ) + 1j*randn( 1, N ) );
+    var = sqrt( N_o/2 );
+    noise = sqrt( var/2 ) * ( randn( 1, N ) + 1j*randn( 1, N ) );
     
     % Generate noisy signals
     noisy = noisefree_scaled + noise;

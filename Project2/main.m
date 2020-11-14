@@ -9,7 +9,7 @@ close all
 
 %% Constants
 
-NUM_EXAMPLES = 100000; % Number of symbols
+NUM_EXAMPLES = 1e5; % Number of symbols
 
 
 %% Question 1
@@ -59,7 +59,7 @@ toc
 
 tic
 
-N_o = 1;        % Noise power
+N_o = 10;        % Noise power
 range = -4:20;  % Range of SNRs to loop through (in dB)
 sz = length(range);
 
@@ -82,10 +82,10 @@ M = length( constellation_anti );
 
 for SNR = range
     
-    E_s = db2pow(SNR) * N_o/2 * log2(M);
+    E_s = db2pow(SNR) * N_o * floor( log2(M) );
     
     err_binary_AP_theoretical( SNR-min(range)+1 ) = qfunc( sqrt( 2*E_s/N_o ) );
-    err_binary_ortho_theoretical( SNR-min(range)+1 ) = qfunc( sqrt( E_s/N_o ) );
+    err_binary_ortho_theoretical( SNR-min(range)+1 ) = qfunc( sqrt( 1*E_s/N_o ) );
     
 end
 
