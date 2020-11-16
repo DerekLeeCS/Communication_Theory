@@ -1,7 +1,6 @@
 function estimatedSyms = LSDiff( constellation, noisySyms )
 
     % Calculate the distance from each point on the constellation
-    % Need to use conj() to deal with transpose b/c transpose conjugates
     newConstellation = [ constellation constellation+2*pi ];
     dist = abs( newConstellation - noisySyms.' );
     

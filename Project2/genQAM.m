@@ -1,5 +1,7 @@
 function constellation = genQAM( M )
-        
+    
+    % Generates M evenly-spaced points in the shape of a rectangle
+
     % Floor() for square will not change anything
     % Required for rectangle
     xLen = floor( sqrt(M) );   
