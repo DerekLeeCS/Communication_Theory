@@ -14,8 +14,8 @@ function [ angle_noisefree, receivedDiff ] = scaleDiff( constellation, noisefree
     
     % Generate noise with desired average energy
     N = size( noisefree, 2 );
-    var = sqrt( N_o/2 );
-    noise = sqrt( var/2 ) * ( randn( 1, N ) + 1j*randn( 1, N ) );
+    sig = sqrt( N_o/4 );
+    noise = ( sig ) * ( randn( 1, N ) + 1j*randn( 1, N ) );
     
     % Phase constellation
     angle_constellation = calcAngleConstellation( constellation_scaled );

@@ -14,8 +14,8 @@ function [ noisefree_scaled, receivedVec ] = scaleNonDiff( constellation, noisef
     
     % Generate noise with desired average energy
     N = size( noisefree, 2 );
-    var = sqrt( N_o/2 );
-    noise = sqrt( var/2 ) * ( randn( 1, N ) + 1j*randn( 1, N ) );
+    sig = sqrt( N_o/4 );
+    noise = sig * ( randn( 1, N ) + 1j*randn( 1, N ) );
     
     % Generate noisy signals
     noisy = noisefree_scaled + noise;

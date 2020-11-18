@@ -2,7 +2,7 @@ clc
 clear
 close all
 
-% Derek Lee
+% Derek Lee, Brian Doan, Steven Lee
 % Communication Theory Fall 2020
 % Project #2
 
