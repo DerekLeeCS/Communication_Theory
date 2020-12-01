@@ -7,6 +7,30 @@ close all
 % Homework #5
 
 
+%% Question 1
+
+% Raised Cosine
+alpha = 0.5;
+T = 10;
+syms w
+X_rc = piecewise( ( 0 <= abs(w) ) & ( abs(w) <= pi*(1-alpha)/T ), ...
+                        T, ...
+                  ( pi*(1-alpha)/T <= abs(w) ) & ( abs(w) <= pi*(1+alpha)/T ), ...
+                        (T/2) * ( 1 + cos( T/(2*alpha) * (abs(w) - pi*(1-alpha)/T ) ) ), ...
+                  abs(w) > pi*(1+alpha)/T, ...
+                        0 );
+
+% Plot the function
+testPoints = linspace( -pi*(1+alpha)/T, pi*(1+alpha)/T, 100 );
+X = subs( X_rc, w, testPoints );
+
+figure();
+plot( testPoints, X );
+title( "Raised Cosine (\alpha=" + alpha + ", T=" + T + ")" );
+xlabel( "\omega (rads)" );
+ylabel( "X_{rc}", 'rotation', 0, 'Units', 'Normalized', 'Position', [-0.075, 0.5, 0] );
+
+
 %% Question 4
 
 % Calculate entropy using probabilities
@@ -49,4 +73,30 @@ C = mod(C,2);
 D = pdist(C);
 minDist = min(D)^2;
 Z = squareform(D);
+disp( "The minimum distance is: " + minDist );
+
+
+%% Question 10
+
+P = [ 1,1,1,1;
+      0,1,1,0;
+      1,1,0,1 ];
+    
+G_S = [ eye(k) P ];
+    
+
+%% Question 11
+
+H = [ P' eye(n-k) ];
+
+
+%% Question 12
+
+GH = G*H';
+GH = mod(GH,2);
+G_SH = G_S*H';
+G_SH = mod(G_SH,2);
+
+disp( "Total sum of GH is: " + sum(GH,'all') );
+disp( "Total sum of G_SH is: " + sum(G_SH,'all') );
 
