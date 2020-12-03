@@ -2,7 +2,7 @@ clc
 clear
 close all
 
-% Derek Lee, Steven Lee
+% Brian Doan, Derek Lee, Steven Lee
 % Communication Theory Fall 2020
 % Project #3
 
@@ -30,8 +30,7 @@ n_2 = size( G_2, 2 );
 
 % Convert to binary and reorder to columns
 % 1 = 1000 -> 1 = 0001
-numBits = 4;
-range = de2bi( 0:2^numBits-1 );
+range = de2bi( 0:2^k-1 );
 range = flip( range, 2 );
 
 % Generate the codewords
@@ -53,7 +52,80 @@ P_2 = G_2( :, k+1:end );
 H_1 = [ P_1' eye(n_1-k) ];
 H_2 = [ P_2' eye(n_2-k) ];
 
-assert( multF2( G_1,H_1' == 0 )
+% Ensure G*H = 0
+assert( sum( abs( multF2( G_1, H_1' ) ), 'all' ) == 0, "H_1 is not a valid parity check matrix" );
+assert( sum( abs( multF2( G_2, H_2' ) ), 'all' ) == 0, "H_2 is not a valid parity check matrix" );
+
 
 %% Question 6
 
+cosetLeads_1 = zeros( 1, n_1 );
+cosetLeads_1 = [ cosetLeads_1; genErrors( maxErrs_1, n_1 ) ];
+cosetLeads_2 = zeros( 1, n_2 );
+for numErrs = 1:maxErrs_2
+    cosetLeads_2 = [ cosetLeads_2; genErrors( numErrs, n_2 ) ];
+end
+S_1 = genSyndrome( H_1, cosetLeads_1 );
+S_2 = genSyndrome( H_2, cosetLeads_2 );
+
+disp( "S_1 is " + ( 2^(n_1-k) - size( S_1, 1 ) ) + " smaller." );
+disp( "S_2 is " + ( 2^(n_2-k) - size( S_2, 1 ) ) + " smaller." );
+
+
+%% Question 7
+
+% Test x random samples
+samples = 10;
+codes = C_2( randsample( size( C_2, 1 ), samples, 'true' ), : ); 
+errs = cosetLeads_2( randsample( size( cosetLeads_2, 1 ), samples, 'true' ), : );
+
+sent = addF2( codes, errs );
+
+% Test correctable errors
+for i = 1:samples
+    corrected = correctWord( sent(i,:), cosetLeads_2, S_2, H_2 );
+    assert( isequal( corrected, codes(i,:) ), ""+i );
+end
+
+disp( "Works!" );
+
+
+%% Question 8
+
+samples = 1e5;
+points = 100;
+prob = linspace( 0.001, 0.1, points );
+
+uncoded = range( randsample( size( range, 1 ), samples, 'true' ), : ); 
+coded_1 = multF2( uncoded, G_1 );
+coded_2 = multF2( uncoded, G_2 );
+
+uncodedAcc = zeros( 1, points );
+codedAcc_1 = zeros( 1, points );
+codedAcc_2 = zeros( 1, points );
+
+for i = 1:points
+    
+    corrupted_uncoded = corruptString( uncoded, prob(i) );
+    corrupted_1 = corruptString( coded_1, prob(i) );
+    corrupted_2 = corruptString( coded_2, prob(i) );
+    
+    corrected_1 = correctWord( corrupted_1, cosetLeads_1, S_1, H_1 );
+    corrected_2 = correctWord( corrupted_2, cosetLeads_2, S_2, H_2 );
+
+    uncodedAcc(i) = sum( sum( abs( uncoded - corrupted_uncoded ), 2 ) ) / samples;
+    codedAcc_1(i) = sum( sum( abs( coded_1 - corrected_1 ), 2 ) ) / samples;
+    codedAcc_2(i) = sum( sum( abs( coded_2 - corrected_2 ), 2 ) ) / samples;
+
+end
+
+
+%% Plot Accuracies
+
+figure();
+hold on;
+plot( 1:points, uncodedAcc, 'DisplayName', 'Uncoded' );
+plot( 1:points, codedAcc_1, 'DisplayName', 'G_1' );
+plot( 1:points, codedAcc_2, 'DisplayName', 'G_2' );
+hold off;
+legend();
